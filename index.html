@@ -195,6 +195,18 @@
       gap: 22px;
     }
 
+    /* Language selector in header */
+    .lang-select {
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .lang-select option { color: #000; }
+
     nav a {
       position: relative;
 
@@ -1502,6 +1514,12 @@
       <a href="#contacts">Контакты</a>
 
     </nav>
+
+    <select id="langSelect" aria-label="Выбор языка" class="lang-select">
+      <option value="ru">Рус</option>
+      <option value="ky">Кыргыз</option>
+      <option value="ar">عربي</option>
+    </select>
 
   </div>
 
