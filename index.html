@@ -23,6 +23,8 @@
 
   <meta name="theme-color" content="#123b2a">
 
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+
 
   <style>
 
@@ -36,6 +38,17 @@
       box-sizing: border-box;
     }
 
+    /* RTL Arabic font and direction support */
+    body.rtl {
+      direction: rtl;
+      text-align: right;
+      font-family: 'Noto Naskh Arabic', Georgia, serif;
+    }
+
+    body.rtl h1, body.rtl h2, body.rtl h3, body.rtl h4 {
+      font-family: 'Noto Naskh Arabic', Georgia, serif;
+    }
+
     html {
       scroll-behavior: smooth;
     }
@@ -44,147 +57,184 @@
       from {
         opacity: 0;
         transform: translateY(24px);
-      // Загрузка переводов из внешнего файла i18n.json и применение
-      (function () {
-        async function loadTranslations() {
-          try {
-            const resp = await fetch('i18n.json');
-            if (!resp.ok) throw new Error('Не удалось загрузить i18n.json');
-            return await resp.json();
-          } catch (err) {
-            console.error(err);
-            return null;
-          }
-        }
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-        function applyTranslations(translations, lang) {
-          if (!translations) return;
-          const t = translations[lang] || translations.ru;
-          document.documentElement.lang = lang;
-          if (lang === 'ar') {
-            document.documentElement.dir = 'rtl';
-            document.body.classList.add('rtl');
-          } else {
-            document.documentElement.dir = 'ltr';
-            document.body.classList.remove('rtl');
-          }
+    @keyframes pulseGlow {
+      0%, 100% {
+        box-shadow: 0 0 0 rgba(216, 177, 93, 0.0);
+      }
+      50% {
+        box-shadow: 0 0 0 12px rgba(216, 177, 93, 0.08);
+      }
+    }
 
-          // Logo
-          const logoEl = document.querySelector('.logo');
-          if (logoEl) logoEl.innerHTML = t.logo || '';
+    body {
+      font-family:
+        "Segoe UI",
+        Arial,
+        Helvetica,
+        sans-serif;
 
-          // Nav
-          const navLinks = document.querySelectorAll('#mainNav a');
-          (t.nav || []).forEach((text, i) => { if (navLinks[i]) navLinks[i].textContent = text; });
+      color: #24342c;
+      background:
+        linear-gradient(180deg, #f6f1e5 0%, #f8f6ef 18%, #f4f0ea 100%);
+      line-height: 1.7;
+      letter-spacing: 0.01em;
+    }
 
-          // Hero
-          const hero = t.hero || {};
-          document.querySelectorAll('.hero h1').forEach(el => el.textContent = hero.h1 || '');
-          document.querySelectorAll('.hero h2').forEach(el => el.textContent = hero.h2 || '');
-          document.querySelectorAll('.hero p').forEach(el => el.textContent = hero.p || '');
-          const btnGold = document.querySelector('.hero .button-gold'); if (btnGold) btnGold.textContent = hero.btn1 || '';
-          const btnOutline = document.querySelector('.hero .button-outline'); if (btnOutline) btnOutline.textContent = hero.btn2 || '';
+    img {
+      max-width: 100%;
+      display: block;
+    }
 
-          // About
-          if (t.about) {
-            const a = t.about;
-            const aboutSmall = document.querySelector('#about .section-heading .small'); if (aboutSmall) aboutSmall.textContent = a.small || '';
-            const aboutH2 = document.querySelector('#about .section-heading h2'); if (aboutH2) aboutH2.textContent = a.h2 || '';
-            const aboutP = document.querySelector('#about .section-heading p'); if (aboutP) aboutP.textContent = (a.p && a.p[0]) || '';
-            const aboutH3 = document.querySelector('.about-content h3'); if (aboutH3) aboutH3.textContent = a.h3 || '';
-            const aboutParas = document.querySelectorAll('.about-content p');
-            (a.p || []).forEach((text, i) => { if (aboutParas[i]) aboutParas[i].textContent = text; });
-            const important = document.querySelector('.important-box strong'); if (important) important.textContent = a.important || '';
-          }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-          // Features
-          (t.features || []).forEach((f, i) => {
-            const feature = document.querySelectorAll('.feature')[i];
-            if (!feature) return;
-            const h3 = feature.querySelector('h3'); if (h3) h3.textContent = f.title || '';
-            const p = feature.querySelector('p'); if (p) p.textContent = f.text || '';
-          });
+    ul {
+      list-style: none;
+    }
 
-          // Branches
-          (t.branches || []).forEach((b, i) => {
-            const branch = document.querySelectorAll('.branch')[i]; if (!branch) return;
-            const h3 = branch.querySelector('h3'); if (h3) h3.textContent = b.h3 || '';
-            const ps = branch.querySelectorAll('p'); (b.p || []).forEach((text, j) => { if (ps[j]) ps[j].textContent = text; });
-            const lis = branch.querySelectorAll('ul li'); (b.list || []).forEach((text, j) => { if (lis[j]) lis[j].textContent = text; });
-            const addr = branch.querySelector('.address'); if (addr) addr.innerHTML = b.address || '';
-          });
 
-          // Education
-          if (t.education) {
-            const e = t.education;
-            const secSmall = document.querySelector('#education .section-heading .small'); if (secSmall) secSmall.textContent = e.small || '';
-            const secH2 = document.querySelector('#education .section-heading h2'); if (secH2) secH2.textContent = e.h2 || '';
-            const secP = document.querySelector('#education .section-heading p'); if (secP) secP.textContent = e.p || '';
-            const cards = document.querySelectorAll('.education-card'); (e.cards || []).forEach((cardData, i) => {
-              const card = cards[i]; if (!card) return;
-              const h3 = card.querySelector('.education-header h3'); if (h3) h3.textContent = cardData.h3 || '';
-              const h4s = card.querySelectorAll('h4'); (cardData.h4s || []).forEach((txt, j) => { if (h4s[j]) h4s[j].textContent = txt; });
-              const professions = card.querySelectorAll('.profession'); (cardData.professions || []).forEach((txt, j) => { if (professions[j]) professions[j].textContent = txt; });
-              const diploma = card.querySelector('.diploma'); if (diploma) diploma.textContent = cardData.diploma || '';
-            });
-          }
+    /* =========================
+       COLORS
+    ========================= */
 
-          // Donation
-          if (t.donation) {
-            const d = t.donation;
-            const ds = document.querySelector('#donation .section-heading .small'); if (ds) ds.textContent = d.small || '';
-            const dh2 = document.querySelector('#donation .section-heading h2'); if (dh2) dh2.textContent = d.h2 || '';
-            const dp = document.querySelector('#donation .section-heading p'); if (dp) dp.textContent = d.p || '';
-            const box = document.querySelector('.donation-box'); if (box) {
-              const h3 = box.querySelector('h3'); if (h3) h3.textContent = d.box.h3 || '';
-              const p = box.querySelector('p'); if (p) p.textContent = d.box.p || '';
-              const btn = box.querySelector('a.button-gold'); if (btn) btn.textContent = d.box.btn || '';
-            }
-          }
+    :root {
+      --green: #123b2a;
+      --green-dark: #0b2a1e;
+      --green-light: #1d5a3c;
+      --green-soft: #eaf4ee;
 
-          // Contacts
-          if (t.contacts) {
-            const c = t.contacts;
-            const cs = document.querySelector('#contacts .section-heading .small'); if (cs) cs.textContent = c.small || '';
-            const ch2 = document.querySelector('#contacts .section-heading h2'); if (ch2) ch2.textContent = c.h2 || '';
-            const cp = document.querySelector('#contacts .section-heading p'); if (cp) cp.textContent = c.p || '';
-            const cards = document.querySelectorAll('.contact-card'); (c.cards || []).forEach((cardData, i) => {
-              const card = cards[i]; if (!card) return;
-              const h3 = card.querySelector('h3'); if (h3) h3.textContent = cardData.h3 || '';
-              const ps = card.querySelectorAll('p'); if (ps[0]) ps[0].innerHTML = `<strong>Адрес:</strong><br>${cardData.address}`;
-              if (ps[1]) ps[1].innerHTML = `<strong>Телефон:</strong><br>${cardData.phone}`;
-            });
-            const formLabels = c.form && c.form.labels;
-            if (formLabels) {
-              const nameLabel = document.querySelector('label[for="contact-fullName"]'); if (nameLabel) nameLabel.textContent = formLabels.name || '';
-              const phoneLabel = document.querySelector('label[for="contact-phone"]'); if (phoneLabel) phoneLabel.textContent = formLabels.phone || '';
-              const msgLabel = document.querySelector('label[for="contact-message"]'); if (msgLabel) msgLabel.textContent = formLabels.message || '';
-              const nameInput = document.getElementById('contact-fullName'); if (nameInput) nameInput.placeholder = (c.form.placeholders && c.form.placeholders.name) || '';
-              const phoneInput = document.getElementById('contact-phone'); if (phoneInput) phoneInput.placeholder = (c.form.placeholders && c.form.placeholders.phone) || '';
-              const msgInput = document.getElementById('contact-message'); if (msgInput) msgInput.placeholder = (c.form.placeholders && c.form.placeholders.message) || '';
-              const submit = document.querySelector('#contact-form .button-gold'); if (submit) submit.textContent = (c.form && c.form.submit) || '';
-            }
-          }
-        }
+      --gold: #d8b15d;
+      --gold-deep: #b98d30;
+      --gold-light: #f1dfb3;
 
-        (async function init() {
-          const translations = await loadTranslations();
-          const select = document.getElementById('langSelect');
-          if (!select) return;
-          select.addEventListener('change', function () {
-            const lang = this.value;
-            localStorage.setItem('siteLang', lang);
-            applyTranslations(translations, lang);
-          });
-          const saved = localStorage.getItem('siteLang') || 'ru';
-          select.value = saved;
-          applyTranslations(translations, saved);
-        })();
-      })();
-    </script>
+      --cream: #f8f6ef;
+      --white: #ffffff;
 
-    </body>
-    </html>
+      --text: #24342c;
+      --muted: #5f6d67;
+
+      --border: rgba(18, 59, 42, 0.12);
+
+      --shadow:
+        0 18px 45px rgba(18, 59, 42, 0.10);
+      --soft-shadow:
+        0 12px 30px rgba(17, 41, 31, 0.08);
+    }
+
+
+    /* =========================
+       CONTAINER
+    ========================= */
+
+    .container {
+      width: min(1180px, 92%);
+      margin: 0 auto;
+    }
+
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+
+      background: rgba(10, 30, 23, 0.84);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow:
+        0 8px 24px rgba(9, 23, 18, 0.10);
+    }
+
+    .header-inner {
+      min-height: 82px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 30px;
+    }
+
+    .logo {
+      color: white;
+      font-size: 20px;
+      font-weight: 700;
+
+      line-height: 1.2;
+    }
+
+    .logo small {
+      display: block;
+
+      margin-top: 5px;
+
+      color: var(--gold-light);
+
+      font-size: 11px;
+      font-weight: 400;
+
+      letter-spacing: 0.4px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    nav a {
+      position: relative;
+
+      color: #fff;
+
+      font-size: 14px;
+      transition: 0.3s;
+    }
+
+    nav a::after {
+      content: "";
+
+      position: absolute;
+
+      left: 0;
+      bottom: -7px;
+
+      width: 0;
+      height: 2px;
+
+      background: var(--gold);
+
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: var(--gold-light);
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    .menu-button {
+      display: none;
+
+      border: 0;
+      background: transparent;
+
+      color: white;
 
       font-size: 28px;
       cursor: pointer;
@@ -1452,15 +1502,6 @@
       <a href="#contacts">Контакты</a>
 
     </nav>
-
-    <div class="lang-switch" aria-hidden="false">
-      <label for="langSelect" style="display:none">Язык</label>
-      <select id="langSelect" aria-label="Выбор языка">
-        <option value="ru">Русский</option>
-        <option value="ky">Кыргызча</option>
-        <option value="ar">العربية</option>
-      </select>
-    </div>
 
   </div>
 
@@ -2958,249 +2999,52 @@
 
 </script>
 
+</script>
+
 <script>
-  // Полная i18n реализация для статических текстов страницы
-  (function () {
-    const translations = {
-      ru: {
-        logo: `Медресе Имам Абу Ханифа<small>Качественное знание — достойное будущее</small>`,
-        nav: ["Главная","О медресе","Отделения","Обучение","Поступление","Новости","Галерея","Пожертвования","Контакты"],
-        hero: { h1: "Медресе Имам Абу Ханифа", h2: "Исламское знание, нравственность и достойное будущее", p: `В нашем медресе учащиеся получают религиозные знания, укрепляют исламскую нравственность, а также получают качественную общеобразовательную и профессиональную подготовку.`, btn1: "Наше обучение", btn2: "Поступление" },
-        about: { small: "О нас", h2: "О медресе", p: [
-          `Знания, воспитание и подготовка к достойному будущему.`,
-          `Медресе Имам Абу Ханифа даёт учащимся качественное религиозное образование, помогает укреплять иман и нравственность, а также формирует знания, необходимые для жизни в обществе.`,
-          `Наша цель — привить любовь к Книге Аллаха и Сунне Его Пророка, воспитать ответственную, честную и благочестивую молодёжь, готовую служить людям и своей Ummah.`,
-          `Наряду с исламским образованием учащиеся получают общеобразовательную и профессиональную подготовку, чтобы быть полезными в этом мире и в вечной жизни.`
-        ], h3: `Место знаний и воспитания`, important: `Деятельность медресе осуществляется в соответствии с Конституцией Кыргызской Республики и действующим законодательством Кыргызской Республики.` },
-        features: [
-          { title: "Исламские знания", text: "Глубокое изучение Корана, фикха и исламских наук." },
-          { title: "Нравственность", text: "Воспитание характера, уважения и ответственности по Исламу." },
-          { title: "Профессиональная подготовка", text: "Практические навыки для жизни, труда и служения обществу." },
-          { title: "Достойное будущее", text: "Завершение программ с дипломом и подготовкой к полезной жизни." }
-        ],
-        branches: [
-          {
-            h3: "👦 Медресе для мальчиков",
-            p: [
-              `Мальчики параллельно обучаются в профессиональном лицее, где получают общеобразовательную подготовку и профессиональную специальность.`,
-              `В медресе мальчики получают религиозное образование, изучают исламские науки и шариатские дисциплины.`
-            ],
-            list: ["Изучение исламских наук","Изучение шариатских дисциплин","Направление «Хафиз»","Заучивание Священного Корана","Профессиональная подготовка","Практические навыки"],
-            address: `📍 <strong>Адрес:</strong><br>Кыргызская Республика,<br>Чуйская область,<br>Ысык-Атинский район,<br>село Бирдик,<br>улица Масанчин`
-          },
-          {
-            h3: "👧 Медресе для девочек",
-            p: [
-              `Девушки параллельно обучаются в профессиональном лицее, где получают общеобразовательную подготовку и профессиональную специальность.`,
-              `В медресе девушки получают религиозное образование, изучают исламские науки и шариатские дисциплины.`
-            ],
-            list: ["Изучение исламских наук","Изучение шариатских дисциплин","Профессиональная подготовка","Практические навыки"],
-            address: `📍 <strong>Адрес:</strong><br>Кыргызская Республика,<br>Чуйская область,<br>Ысык-Атинский район,<br>село Бирдик,<br>улица Красно-милянт, 43Б`
-          }
-        ],
-        education: {
-          small: "Образование",
-          h2: "Направления обучения",
-          p: `Религиозное образование сочетается с общеобразовательной и профессиональной подготовкой в профессиональном лицее.`,
-          cards: [
-            { h3: "👦 Обучение для мальчиков", h4s: ["📚 Общеобразовательная и профессиональная подготовка","📖 Религиозное образование","🛠️ Профессиональные направления"], professions: ["Шариат","Хафиз","Изучение исламских наук","Изучение шариатских дисциплин","Сварщик","Фермер","Профессиональный водитель"], diploma: "📜 По завершении соответствующих программ учащиеся получают диплом по освоенному профессиональному направлению." },
-            { h3: "👧 Обучение для девочек", h4s: ["📚 Общеобразовательная и профессиональная подготовка","📖 Религиозное образование","👩‍🍳 Профессиональные направления"], professions: ["Изучение исламских наук","Изучение шариатских дисциплин","Повар-кондитер","Швея"], diploma: "📜 По завершении соответствующих программ учащиеся получают диплом по освоенному профессиональному направлению." }
-          ]
-        },
-        donation: { small: "Поддержка", h2: "Пожертвования", p: `Поддержка образования помогает создавать лучшие условия для учащихся.`, box: { h3: "Поддержать медресе", p: `Здесь будут размещены официальные реквизиты и доступные способы пожертвования.`, btn: "Связаться с нами" } },
-        contacts: { small: "Контакты", h2: "Наши адреса", p: `Вы можете обратиться в соответствующее отделение.`, cards: [ { h3: "👦 Отделение для мальчиков", address: `Кыргызская Республика,<br>Чуйская область,<br>Ысык-Атинский район,<br>село Бирдик,<br>улица Масанчин`, phone: `Добавьте номер телефона` }, { h3: "👧 Отделение для девочек", address: `Кыргызская Республика,<br>Чуйская область,<br>Ысык-Атинский район,<br>село Бирдик,<br>улица Красно-милянт, 43Б`, phone: `Добавьте номер телефона` } ], form: { labels: { name: "Ваше имя", phone: "Телефон", message: "Сообщение" }, placeholders: { name: "Введите имя", phone: "+996 555 123 456", message: "Ваше сообщение" }, submit: "Отправить" } }
-      },
-      ky: {
-        logo: `Иман Абу Ханифа медресеси<small>Сапаттуу билим — татыктуу келечек</small>`,
-        nav: ["Башкы бет","Биз жөнүндө","Бөлүмдөр","Билим берүү","Кабыл алуу","Жаңылыктар","Галерея","Салымдар","Байланыштар"],
-        hero: { h1: "Иман Абу Ханифа медресеси", h2: "Ыймандык билим, адеп-ахлак жана келечек үчүн даярдоо", p: `Медресе окуучуларга диний билим берет, адеп-ахлакты калыптандырат жана коомго пайдалуу кесиптик билим берет.`, btn1: "Окуу программабыз", btn2: "Кабыл алуу" },
-        about: { small: "Биз жөнүндө", h2: "Медресе жөнүндө", p: [
-          `Билим, тарбия жана келечекке даярдоо.`,
-          `Иман Абу Ханифа медресеси окуучуларга сапаттуу диний билим берет, имандуулукту жана адеп-ахлактык сапатты бекемдейт жана коомдун муктаждыктарына ылайык билим берет.`,
-          `Биздин максат — Кудайдын Китебине жана Пайгамбарыбыздын суннаттарына сүйүү тартуулап, жоопкерчиликтүү, ак ниет жана ибадатчыл жаштарды тарбиялоо.`,
-          `Диний окуу менен катар окуучулар коомдук жана кесиптик даярдыкты да алат.`
-        ], h3: `Билим жана тарбия борбору`, important: `Медресенин ишмердүүлүгү Кыргыз Республикасынын Конституциясына жана шайкеш мыйзамдарга ылайык жүргүзүлөт.` },
-        features: [
-          { title: "Диний билим", text: "Куранды, фикхты жана ислам илимдерин терең үйрөнүү." },
-          { title: "Адап-ахлак", text: "Адамдын адеп-ахлагын, урмат-сыйын жана жоопкерчилигин калыптандыруу." },
-          { title: "Кесиптик даярдоо", text: "Жашоого, эмгекке жана коомго пайдалуу практикалык көндүмдөр." },
-          { title: "Татыктуу келечек", text: "Программа жыйынтыкталганда диплом жана практикалык даярдык." }
-        ],
-        branches: [
-          {
-            h3: "👦 Балдар үчүн медресе",
-            p: ["Балдар кесиптик лицейде параллель окуп, жалпы билим жана кесиптик адистик алышат.", "Балдар медреседе диний билим, ислам илимдерин жана шариат дисциплиналарын үйрөнүшөт."],
-            list: ["Диний билимдерди изилдөө","Шариат дисциплиналарын изилдөө","Хафиз багыты","Куранды жаттоо","Кесиптик даярдоо","Практикалык көндүмдөр"],
-            address: `📍 <strong>Дарек:</strong><br>Кыргыз Республикасы,<br>Чүй областы,<br>Ысык-Ата району,<br>Бирдик айылы,<br>Масанчин көчөсү`
-          },
-          {
-            h3: "👧 Кыздар үчүн медресе",
-            p: ["Кыздар кесиптик лицейде параллель окуп, жалпы билим жана кесиптик адистик алышат.", "Кыздар медреседе диний билим жана шариат дисциплиналарын үйрөнүшөт."],
-            list: ["Диний билимдер","Шариат дисциплиналары","Кесиптик даярдоо","Практикалык көндүмдөр"],
-            address: `📍 <strong>Дарек:</strong><br>Кыргыз Республикасы,<br>Чүй областы,<br>Ысык-Ата району,<br>Бирдик айылы,<br>Красно-милянт көчөсү, 43Б`
-          }
-        ],
-        education: {
-          small: "Билим берүү",
-          h2: "Окуу багыттары",
-          p: `Диний билим жалпы жана кесиптик даярдык менен айкалышат.`,
-          cards: [
-            { h3: "👦 Окуу (балдар)", h4s: ["Жалпы жана кесиптик даярдык","Диний билим","Кесиптик багыттар"], professions: ["Шариат","Хафиз","Диний илимдер","Шариат дисциплиналары","Сварщик","Фермер","Кесиптик айдоочу"], diploma: "Программа бүткөндөн кийин тиешелүү багыт боюнча диплом берилет." },
-            { h3: "👧 Окуу (кыздар)", h4s: ["Жалпы жана кесиптик даярдык","Диний билим","Кесиптик багыттар"], professions: ["Диний илимдер","Шеф-кондитер","Тигүүчү"], diploma: "Программа бүткөндөн кийин тиешелүү багыт боюнча диплом берилет." }
-          ]
-        },
-        donation: { small: "Колдоо", h2: "Элимчилик", p: `Билимге колдоо окуучулардын шарттарын жакшыртууга жардам берет.`, box: { h3: "Медресени колдоо", p: `Бул жерге расмий реквизиттер жана донорлук ыкмалары жайгаштырылат.`, btn: "Биз менен байланыш" } },
-        contacts: { small: "Байланыштар", h2: "Даректерибиз", p: `Сиз тиешелүү бөлүмгө кайрыла аласыз.`, cards: [ { h3: "👦 Балдар бөлүмү", address: `Кыргыз Республикасы,<br>Чүй областы,<br>Ысык-Ата району,<br>Бирдик айылы,<br>Масанчин көчөсү`, phone: `Телефонду кошуңуз` }, { h3: "👧 Кыздар бөлүмү", address: `Кыргыз Республикасы,<br>Чүй областы,<br>Ысык-Ата району,<br>Бирдик айылы,<br>Красно-милянт көчөсү, 43Б`, phone: `Телефонду кошуңуз` } ], form: { labels: { name: "Атыңыз", phone: "Телефон", message: "Кат" }, placeholders: { name: "Атын киргизиңиз", phone: "+996 555 123 456", message: "Саламаттык билдирүү" }, submit: "Жөнөтүү" } }
-      },
-      ar: {
-        logo: `مدرسة الإمام أبو حنيفة<small>علم نافع لمستقبل كريم</small>`,
-        nav: ["الرئيسية","عن المعهد","الفروع","التعليم","القبول","الأخبار","المعرض","التبرعات","الاتصال"],
-        hero: { h1: "مدرسة الإمام أبو حنيفة", h2: "العلم الإسلامي، الأخلاق، ومستقبل كريم", p: `في معهدنا يتلقى الطلاب العلم الشرعي، يتربون على الأخلاق الإسلامية، ويحصلون أيضاً على تعليم عام ومهني جيد.`, btn1: "برامجنا التعليمية", btn2: "التقديم" },
-        about: { small: "عنّا", h2: "عن المعهد", p: [
-          `العلم، التربية، والاستعداد لمستقبل كريم.`,
-          `تقدم مدرسة الإمام أبو حنيفة للطلاب تعليماً دينياً نافعاً، وتعمل على ترسيخ الإيمان والأخلاق الإسلامية، وتمنح معارف مفيدة للحياة.`,
-          `هدفنا غرس محبة كتاب الله وسنة نبيه، وتربية شباب مسؤول وصادق وتقٍ، مستعد لخدمة الناس والأمة.`,
-          `إلى جانب التعليم الشرعي يتلقى الطلاب تعليمًا عامًا ومهنيًا جيدًا.`
-        ], h3: `منارة العلم والتربية`, important: `تعمل المدرسة وفق دستور جمهورية قيرغيزستان والتشريعات السارية.` },
-        features: [
-          { title: "العلوم الإسلامية", text: "دراسة متعمقة للقرآن والفقه وعلوم الشريعة." },
-          { title: "الأخلاق", text: "تربية الأخلاق والاحترام والمسؤولية وفق الإسلام." },
-          { title: "التدريب المهني", text: "مهارات عملية للحياة والعمل وخدمة المجتمع." },
-          { title: "مستقبل كريم", text: "إكمال البرامج بشهادات ودعم للاندماج المهني." }
-        ],
-        branches: [
-          { h3: "👦 فرع البنين", p: ["يتلقى البنين تعليمًا عامًا ومهنيًا بالتوازي في المعهد المهني.", "يتعلمون العلوم الشرعية والتخصصات الفقهية."], list: ["دراسة العلوم الإسلامية","دراسة تخصصات الشريعة","حفظ القرآن","تدريب مهني","مهارات عملية"], address: `📍 <strong>العنوان:</strong><br>جمهورية قيرغيزستان,<br>إقليم تشوي,<br>منطقة يسيك-اتا,<br>قرية بيرديك,<br>شارع ماسانشين` },
-          { h3: "👧 فرع البنات", p: ["تتلقى البنات تعليمًا عامًا ومهنيًا بالتوازي.", "يتعلمن العلوم الإسلامية وتخصصات الشريعة."], list: ["العلوم الإسلامية","تخصصات الشريعة","تدريب مهني","مهارات عملية"], address: `📍 <strong>العنوان:</strong><br>جمهورية قيرغيزستان,<br>إقليم تشوي,<br>منطقة يسيك-اتا,<br>قرية بيرديك,<br>شارع كراسنومليانت 43ب` }
-        ],
-        education: { small: "التعليم", h2: "مجالات التعليم", p: `يجمع التعليم الشرعي بين المناهج العامة والتدريب المهني.`, cards: [ { h3: "👦 تعليم البنين", h4s: ["تعليم عام ومهني","التعليم الشرعي","التدريب المهني"], professions: ["الشريعة","حفظ القرآن","دراسة العلوم الإسلامية","تخصصات الشريعة","لحام","زراعة","سائق مهني"], diploma: "يحصل الطلاب عند الانتهاء على دبلوم في التخصص المكتسب." }, { h3: "👧 تعليم البنات", h4s: ["تعليم عام ومهني","التعليم الشرعي","التدريب المهني"], professions: ["دراسة العلوم الإسلامية","تخصصات الشريعة","طباخة-حلوانية","خياطة"], diploma: "يحصل الطالبات عند الانتهاء على دبلوم في التخصص المكتسب." } ] },
-        donation: { small: "الدعم", h2: "التبرعات", p: `يساعد دعم التعليم في تحسين ظروف الطلاب.`, box: { h3: "ادعم المعهد", p: `سيتم وضع البيانات الرسمية وطرق التبرع هنا.`, btn: "تواصل معنا" } },
-        contacts: { small: "الاتصال", h2: "عناويننا", p: `يمكنك التواصل مع الفرع المختص.`, cards: [ { h3: "👦 فرع البنين", address: `جمهورية قيرغيزستان,<br>إقليم تشوي,<br>منطقة يسيك-اتا,<br>قرية بيرديك,<br>شارع ماسانشين`, phone: `أضف رقم الهاتف` }, { h3: "👧 فرع البنات", address: `جمهورية قيرغيزستان,<br>إقليم تشوي,<br>منطقة يسيك-اتا,<br>قرية بيرديك,<br>شارع كراسنومليانت 43ب`, phone: `أضف رقم الهاتف` } ], form: { labels: { name: "اسمك", phone: "الهاتف", message: "الرسالة" }, placeholders: { name: "أدخل الاسم", phone: "+996 555 123 456", message: "رسالتك" }, submit: "إرسال" } }
-      }
-    };
-
-    function applyTranslations(lang) {
-      const t = translations[lang] || translations.ru;
-      document.documentElement.lang = lang;
-      if (lang === 'ar') {
-        document.documentElement.dir = 'rtl';
-        document.body.classList.add('rtl');
-      } else {
-        document.documentElement.dir = 'ltr';
-        document.body.classList.remove('rtl');
-      }
-
-      // Logo
-      const logoEl = document.querySelector('.logo');
-      if (logoEl) logoEl.innerHTML = t.logo;
-
-      // Nav
-      const navLinks = document.querySelectorAll('#mainNav a');
-      (t.nav || []).forEach((text, i) => { if (navLinks[i]) navLinks[i].textContent = text; });
-
-      // Hero
-      const hero = t.hero || {};
-      document.querySelectorAll('.hero h1').forEach(el => el.textContent = hero.h1 || '');
-      document.querySelectorAll('.hero h2').forEach(el => el.textContent = hero.h2 || '');
-      document.querySelectorAll('.hero p').forEach(el => el.textContent = hero.p || '');
-      const btnGold = document.querySelector('.hero .button-gold'); if (btnGold) btnGold.textContent = hero.btn1 || '';
-      const btnOutline = document.querySelector('.hero .button-outline'); if (btnOutline) btnOutline.textContent = hero.btn2 || '';
-
-      // About
-      if (t.about) {
-        const a = t.about;
-        const aboutSmall = document.querySelector('#about .section-heading .small'); if (aboutSmall) aboutSmall.textContent = a.small || '';
-        const aboutH2 = document.querySelector('#about .section-heading h2'); if (aboutH2) aboutH2.textContent = a.h2 || '';
-        const aboutP = document.querySelector('#about .section-heading p'); if (aboutP) aboutP.textContent = (a.p && a.p[0]) || '';
-        const aboutH3 = document.querySelector('.about-content h3'); if (aboutH3) aboutH3.textContent = a.h3 || '';
-        const aboutParas = document.querySelectorAll('.about-content p');
-        (a.p || []).forEach((text, i) => { if (aboutParas[i]) aboutParas[i].textContent = text; });
-        const important = document.querySelector('.important-box strong'); if (important) important.textContent = a.important || '';
-      }
-
-      // Features
-      (t.features || []).forEach((f, i) => {
-        const feature = document.querySelectorAll('.feature')[i];
-        if (!feature) return;
-        const h3 = feature.querySelector('h3'); if (h3) h3.textContent = f.title || '';
-        const p = feature.querySelector('p'); if (p) p.textContent = f.text || '';
-      });
-
-      // Branches (boys/girls)
-      (t.branches || []).forEach((b, i) => {
-        const branch = document.querySelectorAll('.branch')[i]; if (!branch) return;
-        const h3 = branch.querySelector('h3'); if (h3) h3.textContent = b.h3 || '';
-        const ps = branch.querySelectorAll('p'); (b.p || []).forEach((text, j) => { if (ps[j]) ps[j].textContent = text; });
-        const lis = branch.querySelectorAll('ul li'); (b.list || []).forEach((text, j) => { if (lis[j]) lis[j].textContent = text; });
-        const addr = branch.querySelector('.address'); if (addr) addr.innerHTML = b.address || '';
-      });
-
-      // Education
-      if (t.education) {
-        const e = t.education;
-        const secSmall = document.querySelector('#education .section-heading .small'); if (secSmall) secSmall.textContent = e.small || '';
-        const secH2 = document.querySelector('#education .section-heading h2'); if (secH2) secH2.textContent = e.h2 || '';
-        const secP = document.querySelector('#education .section-heading p'); if (secP) secP.textContent = e.p || '';
-        const cards = document.querySelectorAll('.education-card'); (e.cards || []).forEach((cardData, i) => {
-          const card = cards[i]; if (!card) return;
-          const h3 = card.querySelector('.education-header h3'); if (h3) h3.textContent = cardData.h3 || '';
-          const h4s = card.querySelectorAll('h4'); (cardData.h4s || []).forEach((txt, j) => { if (h4s[j]) h4s[j].textContent = txt; });
-          const professions = card.querySelectorAll('.profession'); (cardData.professions || []).forEach((txt, j) => { if (professions[j]) professions[j].textContent = txt; });
-          const diploma = card.querySelector('.diploma'); if (diploma) diploma.textContent = cardData.diploma || '';
-        });
-      }
-
-      // Donation
-      if (t.donation) {
-        const d = t.donation;
-        const ds = document.querySelector('#donation .section-heading .small'); if (ds) ds.textContent = d.small || '';
-        const dh2 = document.querySelector('#donation .section-heading h2'); if (dh2) dh2.textContent = d.h2 || '';
-        const dp = document.querySelector('#donation .section-heading p'); if (dp) dp.textContent = d.p || '';
-        const box = document.querySelector('.donation-box'); if (box) {
-          const h3 = box.querySelector('h3'); if (h3) h3.textContent = d.box.h3 || '';
-          const p = box.querySelector('p'); if (p) p.textContent = d.box.p || '';
-          const btn = box.querySelector('a.button-gold'); if (btn) btn.textContent = d.box.btn || '';
-        }
-      }
-
-      // Contacts
-      if (t.contacts) {
-        const c = t.contacts;
-        const cs = document.querySelector('#contacts .section-heading .small'); if (cs) cs.textContent = c.small || '';
-        const ch2 = document.querySelector('#contacts .section-heading h2'); if (ch2) ch2.textContent = c.h2 || '';
-        const cp = document.querySelector('#contacts .section-heading p'); if (cp) cp.textContent = c.p || '';
-        const cards = document.querySelectorAll('.contact-card'); (c.cards || []).forEach((cardData, i) => {
-          const card = cards[i]; if (!card) return;
-          const h3 = card.querySelector('h3'); if (h3) h3.textContent = cardData.h3 || '';
-          const ps = card.querySelectorAll('p'); if (ps[0]) ps[0].innerHTML = `<strong>Адрес:</strong><br>${cardData.address.replace(/\n/g,'<br>')}`;
-          if (ps[1]) ps[1].innerHTML = `<strong>Телефон:</strong><br>${cardData.phone}`;
-        });
-        // Contact form labels/placeholders
-        const formLabels = c.form && c.form.labels;
-        if (formLabels) {
-          const nameLabel = document.querySelector('label[for="contact-fullName"]'); if (nameLabel) nameLabel.textContent = formLabels.name || '';
-          const phoneLabel = document.querySelector('label[for="contact-phone"]'); if (phoneLabel) phoneLabel.textContent = formLabels.phone || '';
-          const msgLabel = document.querySelector('label[for="contact-message"]'); if (msgLabel) msgLabel.textContent = formLabels.message || '';
-          const nameInput = document.getElementById('contact-fullName'); if (nameInput) nameInput.placeholder = (c.form.placeholders && c.form.placeholders.name) || '';
-          const phoneInput = document.getElementById('contact-phone'); if (phoneInput) phoneInput.placeholder = (c.form.placeholders && c.form.placeholders.phone) || '';
-          const msgInput = document.getElementById('contact-message'); if (msgInput) msgInput.placeholder = (c.form.placeholders && c.form.placeholders.message) || '';
-          const submit = document.querySelector('#contact-form .button-gold'); if (submit) submit.textContent = (c.form && c.form.submit) || '';
-        }
-      }
-
+  // i18n loader moved here to avoid being inside <style>
+  async function loadTranslations() {
+    try {
+      const resp = await fetch('i18n.json');
+      return await resp.json();
+    } catch (e) {
+      return null;
     }
+  }
 
-    const select = document.getElementById('langSelect');
-    if (!select) return;
+  function applyTranslations(translations, lang) {
+    if (!translations || !translations[lang]) return;
+    const t = translations[lang];
+    document.documentElement.lang = lang;
+    document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+    document.body.classList.toggle('rtl', lang === 'ar');
 
-    select.addEventListener('change', function () {
-      const lang = this.value;
-      localStorage.setItem('siteLang', lang);
-      applyTranslations(lang);
+    // Simple replacements
+    const logo = document.getElementById('logo-text');
+    if (logo) logo.textContent = t.logo;
+
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+      const key = el.getAttribute('data-i18n');
+      const parts = key.split('.');
+      let val = t;
+      for (const p of parts) { if (val[p] !== undefined) val = val[p]; else { val = null; break; } }
+      if (val !== null && val !== undefined) el.innerHTML = val;
     });
+  }
 
+  (async function initI18n() {
+    const translations = await loadTranslations();
     const saved = localStorage.getItem('siteLang') || 'ru';
-    select.value = saved;
-    applyTranslations(saved);
+    const select = document.getElementById('langSelect');
+    if (select) select.value = saved;
+    applyTranslations(translations, saved);
+    if (select) {
+      select.addEventListener('change', function() {
+        const v = this.value;
+        localStorage.setItem('siteLang', v);
+        applyTranslations(translations, v);
+      });
+    }
   })();
 </script>
 
