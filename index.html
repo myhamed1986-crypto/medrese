@@ -3067,6 +3067,127 @@
       for (const p of parts) { if (val && val[p] !== undefined) val = val[p]; else { val = null; break; } }
       if (val !== null && val !== undefined) el.innerHTML = val;
     });
+
+    // ABOUT section
+    if (t.about) {
+      const sh = document.querySelector('#about .section-heading');
+      if (sh) {
+        const small = sh.querySelector('.small'); if (small && t.about.small) small.textContent = t.about.small;
+        const h2 = sh.querySelector('h2'); if (h2 && t.about.h2) h2.textContent = t.about.h2;
+        const p = sh.querySelector('p'); if (p && Array.isArray(t.about.p)) p.textContent = t.about.p[0] || '';
+      }
+      const aboutContent = document.querySelector('#about .about-content');
+      if (aboutContent) {
+        const h3 = aboutContent.querySelector('h3'); if (h3 && t.about.h3) h3.textContent = t.about.h3;
+        const paras = aboutContent.querySelectorAll('p');
+        if (paras && paras.length && Array.isArray(t.about.p)) {
+          paras.forEach(function(pEl, i) { pEl.innerHTML = t.about.p[i] || ''; });
+        }
+        const important = aboutContent.querySelector('.important-box strong');
+        if (important && t.about.important) important.textContent = t.about.important;
+      }
+    }
+
+    // FEATURES
+    if (Array.isArray(t.features)) {
+      const feats = document.querySelectorAll('#features .features .feature');
+      feats.forEach(function(fEl, i) {
+        const h3 = fEl.querySelector('h3'); if (h3 && t.features[i] && t.features[i].title) h3.textContent = t.features[i].title;
+        const p = fEl.querySelector('p'); if (p && t.features[i] && t.features[i].text) p.textContent = t.features[i].text;
+      });
+    }
+
+    // BRANCHES
+    if (Array.isArray(t.branches)) {
+      const branches = document.querySelectorAll('#branches .branch');
+      branches.forEach(function(bEl, i) {
+        if (!t.branches[i]) return;
+        const h3 = bEl.querySelector('h3'); if (h3 && t.branches[i].h3) h3.innerHTML = t.branches[i].h3;
+        const paras = bEl.querySelectorAll('p');
+        if (paras && paras.length && Array.isArray(t.branches[i].p)) {
+          paras.forEach(function(pEl, idx) { pEl.innerHTML = t.branches[i].p[idx] || ''; });
+        }
+        const lis = bEl.querySelectorAll('ul li');
+        if (lis && lis.length && Array.isArray(t.branches[i].list)) {
+          lis.forEach(function(li, idx) { li.innerHTML = t.branches[i].list[idx] || ''; });
+        }
+        const addr = bEl.querySelector('.address'); if (addr && t.branches[i].address) addr.innerHTML = t.branches[i].address;
+      });
+    }
+
+    // EDUCATION
+    if (t.education) {
+      const sh = document.querySelector('#education .section-heading');
+      if (sh) {
+        const small = sh.querySelector('.small'); if (small && t.education.small) small.textContent = t.education.small;
+        const h2 = sh.querySelector('h2'); if (h2 && t.education.h2) h2.textContent = t.education.h2;
+        const p = sh.querySelector('p'); if (p && t.education.p) p.textContent = t.education.p;
+      }
+      if (Array.isArray(t.education.cards)) {
+        const cards = document.querySelectorAll('#education .education-card');
+        cards.forEach(function(card, i) {
+          const data = t.education.cards[i]; if (!data) return;
+          const h3 = card.querySelector('h3'); if (h3 && data.h3) h3.textContent = data.h3;
+          const h4s = card.querySelectorAll('h4');
+          if (h4s && data.h4s) h4s.forEach(function(h4, idx) { h4.textContent = data.h4s[idx] || h4.textContent; });
+          const profs = card.querySelectorAll('.profession strong');
+          if (profs && data.professions) profs.forEach(function(pEl, idx) { pEl.textContent = data.professions[idx] || pEl.textContent; });
+          const diploma = card.querySelector('.diploma'); if (diploma && data.diploma) diploma.innerHTML = data.diploma;
+        });
+      }
+    }
+
+    // DONATION
+    if (t.donation) {
+      const sh = document.querySelector('#donation .section-heading');
+      if (sh) {
+        const small = sh.querySelector('.small'); if (small && t.donation.small) small.textContent = t.donation.small;
+        const h2 = sh.querySelector('h2'); if (h2 && t.donation.h2) h2.textContent = t.donation.h2;
+        const p = sh.querySelector('p'); if (p && t.donation.p) p.textContent = t.donation.p;
+      }
+      const box = document.querySelector('#donation .donation-box');
+      if (box && t.donation.box) {
+        const h3 = box.querySelector('h3'); if (h3 && t.donation.box.h3) h3.textContent = t.donation.box.h3;
+        const p = box.querySelector('p'); if (p && t.donation.box.p) p.innerHTML = t.donation.box.p;
+        const btn = box.querySelector('.button'); if (btn && t.donation.box.btn) btn.textContent = t.donation.box.btn;
+      }
+    }
+
+    // CONTACTS
+    if (t.contacts) {
+      const sh = document.querySelector('#contacts .section-heading');
+      if (sh) {
+        const small = sh.querySelector('.small'); if (small && t.contacts.small) small.textContent = t.contacts.small;
+        const h2 = sh.querySelector('h2'); if (h2 && t.contacts.h2) h2.textContent = t.contacts.h2;
+        const p = sh.querySelector('p'); if (p && t.contacts.p) p.textContent = t.contacts.p;
+      }
+      if (Array.isArray(t.contacts.cards)) {
+        const cards = document.querySelectorAll('#contacts .contact-card');
+        cards.forEach(function(card, i) {
+          const data = t.contacts.cards[i]; if (!data) return;
+          const h3 = card.querySelector('h3'); if (h3 && data.h3) h3.innerHTML = data.h3;
+          const ps = card.querySelectorAll('p');
+          if (ps && data.address) ps[0].innerHTML = data.address;
+          if (ps && data.phone) ps[1].innerHTML = '<strong>Телефон:</strong><br>' + data.phone;
+        });
+      }
+
+      // Contact form labels/placeholders
+      if (t.contacts.form) {
+        const labels = t.contacts.form.labels || {};
+        const places = t.contacts.form.placeholders || {};
+        const contactForm = document.getElementById('contact-form');
+        if (contactForm) {
+          const labName = contactForm.querySelector('label[for="contact-fullName"]'); if (labName && labels.name) labName.textContent = labels.name;
+          const labPhone = contactForm.querySelector('label[for="contact-phone"]'); if (labPhone && labels.phone) labPhone.textContent = labels.phone;
+          const labMsg = contactForm.querySelector('label[for="contact-message"]'); if (labMsg && labels.message) labMsg.textContent = labels.message;
+          const inpName = contactForm.querySelector('#contact-fullName'); if (inpName && places.name) inpName.placeholder = places.name;
+          const inpPhone = contactForm.querySelector('#contact-phone'); if (inpPhone && places.phone) inpPhone.placeholder = places.phone;
+          const inpMsg = contactForm.querySelector('#contact-message'); if (inpMsg && places.message) inpMsg.placeholder = places.message;
+          const submit = contactForm.querySelector('button[type="submit"]'); if (submit && t.contacts.form.submit) submit.textContent = t.contacts.form.submit;
+        }
+      }
+    }
   }
 
   (async function initI18n() {
