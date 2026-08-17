@@ -3037,15 +3037,34 @@
     document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
     document.body.classList.toggle('rtl', lang === 'ar');
 
-    // Simple replacements
-    const logo = document.getElementById('logo-text');
-    if (logo) logo.textContent = t.logo;
+    // Logo (may contain small tag)
+    const logo = document.querySelector('.logo');
+    if (logo && t.logo) logo.innerHTML = t.logo;
 
+    // Navigation
+    if (Array.isArray(t.nav)) {
+      const navLinks = document.querySelectorAll('#mainNav a');
+      navLinks.forEach(function(a, i) {
+        if (t.nav[i]) a.textContent = t.nav[i];
+      });
+    }
+
+    // Hero
+    if (t.hero) {
+      const h1 = document.querySelector('.hero h1'); if (h1 && t.hero.h1) h1.textContent = t.hero.h1;
+      const h2 = document.querySelector('.hero h2'); if (h2 && t.hero.h2) h2.textContent = t.hero.h2;
+      const p = document.querySelector('.hero p'); if (p && t.hero.p) p.textContent = t.hero.p;
+      const buttons = document.querySelectorAll('.hero-buttons a');
+      if (buttons[0] && t.hero.btn1) buttons[0].textContent = t.hero.btn1;
+      if (buttons[1] && t.hero.btn2) buttons[1].textContent = t.hero.btn2;
+    }
+
+    // Generic data-i18n attributes (fallback for other content)
     document.querySelectorAll('[data-i18n]').forEach(function(el) {
       const key = el.getAttribute('data-i18n');
       const parts = key.split('.');
       let val = t;
-      for (const p of parts) { if (val[p] !== undefined) val = val[p]; else { val = null; break; } }
+      for (const p of parts) { if (val && val[p] !== undefined) val = val[p]; else { val = null; break; } }
       if (val !== null && val !== undefined) el.innerHTML = val;
     });
   }
