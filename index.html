@@ -3160,6 +3160,22 @@
         const small = sh.querySelector('.small'); if (small && t.contacts.small) small.textContent = t.contacts.small;
         const h2 = sh.querySelector('h2'); if (h2 && t.contacts.h2) h2.textContent = t.contacts.h2;
         const p = sh.querySelector('p'); if (p && t.contacts.p) p.textContent = t.contacts.p;
+
+        // Email (shared contact)
+        if (t.contacts.email) {
+          let emailEl = sh.querySelector('.contact-email');
+          if (!emailEl) {
+            emailEl = document.createElement('p');
+            emailEl.className = 'contact-email';
+            sh.appendChild(emailEl);
+          }
+          // create or update mailto link safely
+          emailEl.innerHTML = '<strong>Email:</strong><br>';
+          const a = document.createElement('a');
+          a.href = 'mailto:' + t.contacts.email;
+          a.textContent = t.contacts.email;
+          emailEl.appendChild(a);
+        }
       }
       if (Array.isArray(t.contacts.cards)) {
         const cards = document.querySelectorAll('#contacts .contact-card');
