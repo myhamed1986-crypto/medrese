@@ -2974,6 +2974,18 @@
       return;
     }
 
+    // Local mock for development when no backend is available
+    // If you're viewing on localhost or 127.0.0.1, short-circuit and simulate success.
+    if (location.hostname === '127.0.0.1' || location.hostname === 'localhost') {
+      submitButton.disabled = true;
+      setFormStatus(form, "Отправляем заявку...", "");
+      await new Promise(function(r) { setTimeout(r, 600); });
+      form.reset();
+      setFormStatus(form, "(Мок) Заявка успешно отправлена. Мы свяжемся с вами в ближайшее время.", "success");
+      submitButton.disabled = false;
+      return;
+    }
+
     submitButton.disabled = true;
     setFormStatus(form, "Отправляем заявку...", "");
 
@@ -2983,17 +2995,35 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
-      const result = await response.json();
 
-      if (!response.ok || !result.success) {
-        const errors = Array.isArray(result.errors) ? result.errors.map(function (item) { return item.message || item.field; }).join("; ") : (result.message || "Ошибка отправки.");
+      // If the server did not return JSON (for example local static server returns an HTML 404),
+      // avoid calling response.json() directly to prevent an uncaught JSON parse error. Handle gracefully.
+      const contentType = response.headers.get('content-type') || '';
+      let result = null;
+      if (contentType.includes('application/json')) {
+        result = await response.json();
+      } else {
+        const txt = await response.text();
+        if (!response.ok) {
+          throw new Error('Сервер вернул ошибку: ' + (txt && txt.length ? txt.slice(0,200) : response.statusText));
+        } else {
+          // server returned non-JSON success (unexpected) — treat as success but log
+          console.warn('Unexpected non-JSON response from /api/applications:', txt);
+          result = { success: true };
+        }
+      }
+
+      if (!response.ok || (result && result.success === false)) {
+        const errors = result && Array.isArray(result.errors) ? result.errors.map(function (item) { return item.message || item.field; }).join('; ') : (result && result.message ? result.message : 'Ошибка отправки.');
         throw new Error(errors);
       }
 
       form.reset();
       setFormStatus(form, "Заявка успешно отправлена. Мы свяжемся с вами в ближайшее время.", "success");
     } catch (error) {
-      setFormStatus(form, error.message || "Не удалось отправить заявку. Попробуйте ещё раз.", "error");
+      // Friendly message when backend is not available locally
+      const msg = error && error.message ? error.message : "Не удалось отправить заявку. Попробуйте ещё раз.";
+      setFormStatus(form, msg, "error");
     } finally {
       submitButton.disabled = false;
     }
