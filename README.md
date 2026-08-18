@@ -32,6 +32,12 @@ Telegram notifications (optional)
 
 Example `.env` entries are provided in `.env.example`.
 
+WhatsApp (Twilio) notifications (optional)
+- You can receive notifications via WhatsApp using Twilio's API. Sign up for Twilio, enable WhatsApp for a sender number, then set these variables in `.env`:
+	- `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_WHATSAPP_FROM` (your Twilio WhatsApp-enabled number), and `WHATSAPP_TO` (the recipient number).
+
+See `.env.example` for sample values. The server will send a WhatsApp message for each submission when these vars are present.
+
 Example (PowerShell):
 
 ```powershell

@@ -80,6 +80,24 @@ app.post('/api/applications', (req, res) => {
       }
     }
 
+    // WhatsApp via Twilio (optional)
+    if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_WHATSAPP_FROM && process.env.WHATSAPP_TO) {
+      try {
+        const twilio = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+        const lines = Object.entries(payload).map(([k, v]) => `${k}: ${v}`);
+        const body = `New application (${payload.type || 'contact'})\n` + lines.join('\n');
+        twilio.messages.create({
+          from: `whatsapp:${process.env.TWILIO_WHATSAPP_FROM}`,
+          to: `whatsapp:${process.env.WHATSAPP_TO}`,
+          body
+        }).then(() => {
+          // sent
+        }).catch(err => console.error('Twilio WhatsApp send failed', err));
+      } catch (e) {
+        console.error('Twilio notify failed', e);
+      }
+    }
+
     return res.json({ success: true });
   } catch (err) {
     console.error('Error handling /api/applications', err);
