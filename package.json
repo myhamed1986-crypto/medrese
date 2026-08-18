@@ -1,0 +1,14 @@
+{
+  "name": "medrese-site",
+  "version": "1.0.0",
+  "description": "Static site with a small Express API to receive form submissions",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.4"
+  }
+}
