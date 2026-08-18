@@ -62,6 +62,24 @@ app.post('/api/applications', (req, res) => {
       }
     }
 
+    // Telegram notification (optional)
+    if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
+      try {
+        const https = require('https');
+        const bot = process.env.TELEGRAM_BOT_TOKEN;
+        const chat = process.env.TELEGRAM_CHAT_ID;
+        const lines = Object.entries(payload).map(([k, v]) => `${k}: ${v}`);
+        const text = encodeURIComponent(`New application (${payload.type || 'contact'})\n` + lines.join('\n'));
+        const url = `https://api.telegram.org/bot${bot}/sendMessage?chat_id=${chat}&text=${text}`;
+        https.get(url, (res) => {
+          // consume response data to free socket
+          res.on('data', () => {});
+        }).on('error', (err) => console.error('Telegram send failed', err));
+      } catch (e) {
+        console.error('Telegram notify failed', e);
+      }
+    }
+
     return res.json({ success: true });
   } catch (err) {
     console.error('Error handling /api/applications', err);

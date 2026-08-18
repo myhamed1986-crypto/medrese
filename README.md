@@ -27,6 +27,11 @@ Form submissions will be appended to `messages.log` in the project root. To enab
 
 You can create a `.env` file in the project root (see `.env.example`) with these variables. The server will load them automatically and attempt to send an email notification for each submission.
 
+Telegram notifications (optional)
+ - If you prefer Telegram notifications, set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in your `.env`. The server will send a short message to the specified chat for each submission.
+
+Example `.env` entries are provided in `.env.example`.
+
 Example (PowerShell):
 
 ```powershell
