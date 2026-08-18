@@ -23,6 +23,9 @@ npm start
 Form submissions will be appended to `messages.log` in the project root. To enable email notifications set the following environment variables before starting the server:
 
 - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `NOTIFY_EMAIL` (and optionally `SMTP_FROM`)
+ - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `NOTIFY_EMAIL` (and optionally `SMTP_FROM`)
+
+You can create a `.env` file in the project root (see `.env.example`) with these variables. The server will load them automatically and attempt to send an email notification for each submission.
 
 Example (PowerShell):
 
